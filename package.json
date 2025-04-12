@@ -20,7 +20,11 @@
   },
   "homepage": "https://github.com/yamamomo2022/tutorial_genkit#readme",
   "dependencies": {
-    "express": "^4.21.2"
+    "@genkit-ai/vertexai": "^1.5.0",
+    "@types/cors": "^2.8.17",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "genkit": "^1.5.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
