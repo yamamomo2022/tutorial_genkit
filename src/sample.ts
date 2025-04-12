@@ -1,20 +1,11 @@
 import express, {Request, Response } from "express";
 import { genkit, z} from 'genkit';
-import { vertexAI, gemini20FlashLitePreview0205 } from '@genkit-ai/vertexai';
+import { vertexAI, gemini15Flash } from '@genkit-ai/vertexai';
 
 const ai = genkit({
   plugins: [vertexAI()],
-  model: gemini20FlashLitePreview0205,
+  model: gemini15Flash,
 });
-
-async () => {
-  const response = await ai.generate('hi Gemini!');
-  if (!response) {
-    throw new Error('No response from AI');
-  }
-  const { text } = response;
-  console.log(text);
-};
 
 export const chatFlow = ai.defineFlow(
   {
@@ -27,7 +18,6 @@ export const chatFlow = ai.defineFlow(
     ),
   },
   async (input) => {
-    // チャット用プロンプト例（必要に応じて調整してください）
     const prompt = input.message;
     
     const response = await ai.generate({
@@ -47,20 +37,27 @@ export const chatFlow = ai.defineFlow(
 
 const app = express()
 const port :number = 3000
-
+// JSONボディパーサーを追加
+app.use(express.json());
 app.get('/', (req: Request, res:Response) => {
   res.send('Hello World!')
 })
 
-app.get('/chat', async (req: Request, res:Response) => {
-  const input = req.body.data;    
-  console.log(`リクエスト`);
-  
+app.post('/chat', async (req: Request, res:Response) => {
   // フローを実行
-  const result = await chatFlow.run(input);
+  try {
+    const input = req.body;    
+    console.log(`リクエスト`);
+    console.log(input);
+    
+    const result = await chatFlow.run(input);
+    // レスポンスを返す
+    res.json(result);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
   
-  // レスポンスを返す
-  res.json(result);
 })
 
 app.listen(port, () => {
