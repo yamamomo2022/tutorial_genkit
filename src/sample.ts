@@ -1,6 +1,12 @@
 import express, {Request, Response } from "express";
 import { genkit, z} from 'genkit';
 import { vertexAI, gemini15Flash } from '@genkit-ai/vertexai';
+import { enableGoogleCloudTelemetry } from '@genkit-ai/google-cloud'
+import { logger } from 'genkit/logging'
+
+logger.setLogLevel(`debug`)
+
+enableGoogleCloudTelemetry()
 
 const ai = genkit({
   plugins: [vertexAI()],
