@@ -1,23 +1,26 @@
 import { genkit } from 'genkit'
-import { gemini25FlashPreview0417 } from '@genkit-ai/googleai'
+import googleAI, { gemini25FlashPreview0417 } from '@genkit-ai/googleai'
 import { defineSecret } from 'firebase-functions/params'
 import { logger } from 'genkit/logging'
 import { mapsClient } from './client'
 import { onCallGenkit } from 'firebase-functions/https'
-import { googleMapsFlow } from './google-maps-flow'
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 // Set logging level to debug for detailed operation logs
 logger.setLogLevel(`debug`)
 
 // API keys stored in Google Cloud Secret Manager
-export const googleAIapiKey = defineSecret(`GOOGLE_GENAI_API_KEY`)
-export const mapsApiKey = defineSecret(`GOOGLE_MAPS_API_KEY`)
+export const googleAIapiKey = process.env.GOOGLE_GENAI_API_KEY || defineSecret(`GOOGLE_GENAI_API_KEY`);
 
 // Initialize Genkit
 export const ai = genkit({
-  plugins: [ mapsClient ],
-  model: gemini25FlashPreview0417,
+  plugins: [googleAI(),  mapsClient ],
+  model: gemini25FlashPreview0417,  
 })
+
+
+const { googleMapsFlow } = require('./google-maps-flow');
 
 export const callGoogleMaps = onCallGenkit({
   secrets: [ googleAIapiKey ],
