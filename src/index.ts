@@ -1,4 +1,4 @@
-import { genkit } from 'genkit'
+import { z, genkit } from 'genkit'
 import googleAI, { gemini25FlashPreview0417 } from '@genkit-ai/googleai'
 import { defineSecret } from 'firebase-functions/params'
 import { logger } from 'genkit/logging'
@@ -42,5 +42,25 @@ export const helloFlow = ai.defineFlow(
 
     console.log("Chat Response:", response);
     return response.text;
+  }
+);
+ 
+export const extractinfo = ai.defineFlow(
+  {
+    name: "extractinfo",
+    inputSchema: z.object({
+      text: z.string(),
+    }),
+    outputSchema: z.object({
+      age: z.number(),
+    }),
+  },
+  async (input) => {
+
+    const extractinfoPrompt = ai.prompt<z.ZodTypeAny, z.ZodTypeAny>('extractinfo');
+    const { output } = await extractinfoPrompt({ input });
+
+    console.log("Chat Response:", output);
+    return output;
   }
 );
