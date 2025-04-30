@@ -1,0 +1,16 @@
+---
+model: googleai/gemini-2.0-flash-lite
+input:
+    schema:
+        text: string
+output:
+    schema: 
+        name?: string, the full name of the person
+        age?: number, the age of the person
+        occupation?: string, the person's occupation
+---
+
+Extract the requested information from the given text. If a piece of information
+is not present, omit that field from the output.
+
+Text: {{text}}
